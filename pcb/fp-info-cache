@@ -1,4 +1,4 @@
-20246364771802395
+20251330369145285
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -85784,3 +85784,24 @@ varistor SIOV
 0
 2
 2
+local
+SW_PUSH_6mm_2cont
+https://www.omron.com/ecb/products/pdf/en-b3f.pdf
+tact sw push 6mm
+0
+4
+4
+local
+Transformer_NF_ETAL_P1165
+NF-Transformer,  ETAL, P1165,http://www.etalgroup.com/sites/default/files/products/P1165_February_2006.pdf
+NF-Transformer ETAL P1165 
+0
+4
+4
+local
+mouse_encoder
+
+
+0
+3
+3
