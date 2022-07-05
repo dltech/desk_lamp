@@ -1,5 +1,5 @@
 /*
- * PWM driver for desk lamp.
+ * PWM driver for desk lamp. Functions for encoder control.
  *
  * Copyright 2022 Mikhail Belkin <dltech174@gmail.com>
  *
@@ -16,14 +16,33 @@
  * limitations under the License.
  */
 
-#include "lib/pwm_lamp.h"
-#include "lib/encoder_button.h"
+#include <avr/io.h>
+#include <stdlib.h>
+#include <avr/interrupt.h>
+#include "lib/regs/timer_regs.h"
+#include "encoder_button.h"
 
-int main(void)
+void encoder_init()
 {
-    pwm_init();
+    s
+    // timer interrupt init
+    TIMSK0 |= TOIE0;
+}
 
-    while(1) {
-        pwm_cycle();
+void encoder_loop()
+{
+    if( (ENC_PORT & (ENC_LEFT | ENC_RIGHT)) == 0 ) {
+        ++encoder.bothCnt;
+    } else {
+        encoder.bothCnt = 0;
     }
+    if(encoder.bothCnt == 200)
+    {
+
+    }
+}
+
+INT(TIM0_OVF_vect)
+{
+    encoder_loop();
 }

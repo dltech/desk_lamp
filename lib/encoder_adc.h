@@ -1,5 +1,7 @@
+#ifndef H_ENCODER_ADC
+#define H_ENCODER_ADC
 /*
- * PWM driver for desk lamp.
+ * PWM driver for desk lamp. Functions for encoder control.
  *
  * Copyright 2022 Mikhail Belkin <dltech174@gmail.com>
  *
@@ -16,14 +18,24 @@
  * limitations under the License.
  */
 
-#include "lib/pwm_lamp.h"
-#include "lib/encoder_button.h"
+// encoder port
+#define ENC_DDR     DDRB
+#define ENC_PORT    PORTB
+#define ENC_LEFT    0x08
+#define ENC_RIGHT   0x10
 
-int main(void)
-{
-    pwm_init();
+// timings
+#define BUTTON_PUSH_MS  50
 
-    while(1) {
-        pwm_cycle();
-    }
+typedef struct {
+    uint8_t leftCnt;
+    uint8_t rightCnt;
+    uint8_t bothCnt;
 }
+
+// encoder init
+void encoder_init(void);
+// encoder check event loop
+void encoder_loop(void);
+
+#endif

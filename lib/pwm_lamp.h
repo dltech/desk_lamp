@@ -1,3 +1,5 @@
+#ifndef H_PWM_LAMP
+#define H_PWM_LAMP
 /*
  * PWM driver for desk lamp.
  *
@@ -16,14 +18,23 @@
  * limitations under the License.
  */
 
-#include "lib/pwm_lamp.h"
-#include "lib/encoder_button.h"
+// ports of colours
+#define PWM_PORT    PORTB
+#define PIN_GREEN   0x04
+#define PIN_RED     0x02
+#define PIN_BLUE    0x01
+#define PIN_WHITE   0x20
 
-int main(void)
-{
-    pwm_init();
+typedef struct {
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+    uint8_t white;
+} colourTyp;
 
-    while(1) {
-        pwm_cycle();
-    }
-}
+// pwm outputs init function
+void pwm_init(void);
+// pwm outputs event loop
+void pwm_cycle(void);
+
+#endif
