@@ -69,4 +69,7 @@
 // ADC1 Digital Input Disable
 #define ADC1D   0x04
 
+// formula for converting volts to adc value in case of 5V reference
+#define VOLT_TO_ADC_5V(volt)    volt*1024/50
+
 #endif

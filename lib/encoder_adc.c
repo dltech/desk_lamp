@@ -19,30 +19,76 @@
 #include <avr/io.h>
 #include <stdlib.h>
 #include <avr/interrupt.h>
-#include "lib/regs/timer_regs.h"
-#include "encoder_button.h"
+#include "encoder_adc.h"
+#include "lib/lamp_menu.h"
 
-void encoder_init()
+// a function who turns adc samples to encoder pin signals
+uint8_t portDecode(void);
+// a function, returning a direction of encoder
+uint8_t encoderDecode(uint8_t port);
+
+void encoderInit()
 {
-    s
-    // timer interrupt init
-    TIMSK0 |= TOIE0;
+    // adc config
+    ADMUX  = REFS0_VCC | MUX_ADC2;
+    ADCSRA = ADEN | ADIE | ADPS_DIV128;
+    // start conversion
+    ADCSRA |= ADSC;
 }
 
-void encoder_loop()
+void portDecode()
 {
-    if( (ENC_PORT & (ENC_LEFT | ENC_RIGHT)) == 0 ) {
-        ++encoder.bothCnt;
-    } else {
-        encoder.bothCnt = 0;
+    uint16_t adcValue = ((uint16_t)(ADCH << 8)) + ADCL;
+    if( adcValue > encTable[ENC_NC] ) {
+        return ENC_NC;
+    } else if( adcValue > encTable[ENC_BOTH] ) {
+        return ENC_BOTH;
+    } else if( adcValue > encTable[ENC_A] ) {
+        return ENC_A;
+    } else if( adcValue > encTable[ENC_B] ) {
+        return ENC_B;
     }
-    if(encoder.bothCnt == 200)
-    {
-
-    }
+    return ENC_BREAK;
 }
 
-INT(TIM0_OVF_vect)
+uint8_t encoderDecode(uint8_t port)
 {
-    encoder_loop();
+    static uint8_t prevPort = ENC_BREAK;
+    static uint8_t stateCnt = 0;
+    static uint8_t fixed = 1;
+    // a counter to fix a stable position of encoder
+    if( (prevPort == port) && (stateCnt < 255) ) {
+        ++stateCnt;
+    }
+    // fixing stable encoder previous positions only
+    if( (prevPort != port) && (stateCnt > STABLE_CNT ) ) {
+        prevPort = port;
+        stateCnt = 0;
+        fixed = 0;
+    }
+    // fixing states of encoder
+    if( (stateCnt > stableCnt) && (fixed == 0) \
+     && (prevPort == ENC_A) && (port == ENC_BOTH) ) {
+         fixed = 1;
+         return ENC_CLOCKWISE;
+    }
+    if( (stateCnt > stableCnt) && (fixed == 0) \
+     && (prevPort == ENC_BOTH) && (port == ENC_B) ) {
+         fixed = 1;
+         return ENC_ANTICLOCKWISE;
+    }
+    return ENC_NOTHING;
+}
+
+INT(ADC_vect)
+{
+    uint8_t encoder = encoderDecode(portDecode());
+    if(encoder == ENC_ANTICLOCKWISE) {
+        anticlockwiseCallback();
+    }
+    if(encoder == ENC_CLOCKWISE) {
+        clockwiseCallback();
+    }
+    ADCSRA &= ~ADIF;
+    ADCSRA |= ADSC;
 }

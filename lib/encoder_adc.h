@@ -17,25 +17,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "lib/regs/adc_regs.h"
 
-// encoder port
-#define ENC_DDR     DDRB
-#define ENC_PORT    PORTB
-#define ENC_LEFT    0x08
-#define ENC_RIGHT   0x10
+// voltages of resistor aray
+#define VOLT_ERROR  2
+enum{
+    ENC_NC = 0,
+    ENC_BOTH,
+    ENC_A,
+    ENC_B,
+    ENC_BREAK
+} encoderStateMachine;
+static uint16_t encTable[4] = { VOLT_TO_ADC_5V(33-VOLT_ERROR),
+                                VOLT_TO_ADC_5V(25-VOLT_ERROR),
+                                VOLT_TO_ADC_5V(20-VOLT_ERROR),
+                                VOLT_TO_ADC_5V(10-VOLT_ERROR) };
 
-// timings
-#define BUTTON_PUSH_MS  50
-
-typedef struct {
-    uint8_t leftCnt;
-    uint8_t rightCnt;
-    uint8_t bothCnt;
+#define STABLE_CNT    50
+enum {
+    ENC_NOTHING = 0,
+    ENC_COCKWISE,
+    ENC_ANTICLOCKWISE
 }
 
 // encoder init
-void encoder_init(void);
-// encoder check event loop
-void encoder_loop(void);
+void encoderInit(void);
 
 #endif
