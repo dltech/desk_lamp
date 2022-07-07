@@ -15,34 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "random127.h"
 
 static uint8_t next = 10;
 
-uint8_t doRand(void);
-
-uint8_t doRand(uint8_t *next) {
+uint8_t rand127(void)
+{
     const int8_t a = 6;
     const int8_t m = 127;
     const int8_t q = m/a;
     const int8_t r = m%a;
     int8_t lo, hi, test;
-    hi = *next / q;
-    lo = *next % q;
+    hi = next / q;
+    lo = next % q;
     test = a*lo - r*hi;
     if(test > 0) {
-        *next = test;
+        next = test;
     } else {
-        *next = test + m;
+        next = test + m;
     }
-    return *next;
+    return next;
 }
 
-uint8_t rand127(void)
-{
-    return doRand(&next);
-}
-
-uint8_t srand127(uint8_t seed)
+void srand127(uint8_t seed)
 {
  	next = seed;
 }

@@ -1,5 +1,5 @@
 /*
- * PWM driver for desk lamp.
+ * PWM driver for desk lamp. Interrupt button handle.
  *
  * Copyright 2022 Mikhail Belkin <dltech174@gmail.com>
  *
@@ -16,19 +16,33 @@
  * limitations under the License.
  */
 
-#include "lib/pwm_lamp.h"
-#include "lib/encoder_adc.h"
-#include "lib/lamp_menu.h"
-#include "lib/button.h"
+#include "regs/interrupts_regs.h"
+#include "lamp_menu.h"
+#include "button.h"
+#include "util/delay.h"
 
-int main(void)
+void buttonsInit()
 {
-    pwm_init();
-    encoderInit();
-    buttonsInit();
-    rndInit();
+    // pull up on button
+    SW_PORT |= SW_GPIO;
+    // interrupt on button push
+    MCUCR = ISC_FALL;
+    GIMSK = INT0;
+    GIFR  = INTF0;
+    PCMSK = PCINT3;
+}
 
-    while(1) {
-        pwm_cycle();
+ISR(INT0_vect)
+{
+    _delay_ms(20);
+    if( (SW_PIN & SW_GPIO) > 0) {
+        buttonCallback();
+    }
+    uint8_t duration = 0;
+    while( ((SW_PIN & SW_GPIO) > 0) && (++duration <= 20) ) {
+        _delay_ms(100);
+    }
+    if(duration == 20) {
+        longButtonCallback();
     }
 }

@@ -17,8 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <inttypes.h>
 
 uint8_t rand127(void);
-uint8_t srand127(uint8_t seed);
+void srand127(uint8_t seed);
 
 #endif

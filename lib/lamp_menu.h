@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <inttypes.h>
 
 enum{
     LAMP_WHITE,
@@ -40,7 +41,7 @@ enum{
     LAMP_ORANGE
 } coloursEnum;
 
-void menuLoop(void);
+void rndInit(void);
 
 // callbacks for encoder decoder
 void clockwiseCallback(void);

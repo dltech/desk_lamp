@@ -21,15 +21,12 @@
 #include "regs/timer_regs.h"
 #include "pwm_lamp.h"
 
-volatile colourTyp colour;
+volatile lampTyp lamp;
 
 void pwm_init()
 {
     // struct init
-    colour.red   = 0;
-    colour.green = 0;
-    colour.blue  = 0;
-    colour.white = 0;
+    setBrightness(0);
     // timer init
     TCNT0  = 0;
     TCCR0A = COM0A_NORMAL | COM0B_NORMAL | WGM01_NORMAL;
@@ -38,24 +35,32 @@ void pwm_init()
     DDRB = PIN_RED | PIN_GREEN | PIN_BLUE | PIN_WHITE;
 }
 
+void setBrightness(uint8_t bright)
+{
+    lamp.white = bright;
+    lamp.red = bright;
+    lamp.green = bright;
+    lamp.blue = bright;
+}
+
 void pwm_cycle()
 {
-    if(TCNT0 >= colour.red) {
+    if(TCNT0 >= lamp.red) {
         PWM_PORT |= PIN_RED;
     } else {
         PWM_PORT &= ~PIN_RED;
     }
-    if(TCNT0 >= colour.green) {
+    if(TCNT0 >= lamp.green) {
         PWM_PORT |= PIN_GREEN;
     } else {
         PWM_PORT &= ~PIN_GREEN;
     }
-    if(TCNT0 >= colour.blue) {
+    if(TCNT0 >= lamp.blue) {
         PWM_PORT |= PIN_BLUE;
     } else {
         PWM_PORT &= ~PIN_BLUE;
     }
-    if(TCNT0 >= colour.white) {
+    if(TCNT0 >= lamp.white) {
         PWM_PORT |= PIN_WHITE;
     } else {
         PWM_PORT &= ~PIN_WHITE;

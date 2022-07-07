@@ -17,10 +17,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "lib/regs/adc_regs.h"
+#include <inttypes.h>
+#include "regs/adc_regs.h"
 
 // voltages of resistor aray
-#define VOLT_ERROR  2
 enum{
     ENC_NC = 0,
     ENC_BOTH,
@@ -28,17 +28,14 @@ enum{
     ENC_B,
     ENC_BREAK
 } encoderStateMachine;
-static uint16_t encTable[4] = { VOLT_TO_ADC_5V(33-VOLT_ERROR),
-                                VOLT_TO_ADC_5V(25-VOLT_ERROR),
-                                VOLT_TO_ADC_5V(20-VOLT_ERROR),
-                                VOLT_TO_ADC_5V(10-VOLT_ERROR) };
+#define VOLT_ERROR  2
 
 #define STABLE_CNT    50
 enum {
     ENC_NOTHING = 0,
-    ENC_COCKWISE,
+    ENC_CLOCKWISE,
     ENC_ANTICLOCKWISE
-}
+};
 
 // encoder init
 void encoderInit(void);

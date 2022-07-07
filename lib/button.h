@@ -1,5 +1,7 @@
+#ifndef H_BUTTON
+#define H_BUTTON
 /*
- * PWM driver for desk lamp.
+ * PWM driver for desk lamp. Interrupt button handle.
  *
  * Copyright 2022 Mikhail Belkin <dltech174@gmail.com>
  *
@@ -15,20 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <avr/io.h>
 
-#include "lib/pwm_lamp.h"
-#include "lib/encoder_adc.h"
-#include "lib/lamp_menu.h"
-#include "lib/button.h"
+#define F_CPU 9600000
 
-int main(void)
-{
-    pwm_init();
-    encoderInit();
-    buttonsInit();
-    rndInit();
+#define SW_PORT PORTB
+#define SW_PIN  PINB
+#define SW_GPIO 0x08
 
-    while(1) {
-        pwm_cycle();
-    }
-}
+void buttonsInit(void);
+
+#endif

@@ -16,29 +16,32 @@
  * limitations under the License.
  */
 
-#include <avr/io.h>
-#include <stdlib.h>
 #include <avr/interrupt.h>
 #include "encoder_adc.h"
-#include "lib/lamp_menu.h"
+#include "lamp_menu.h"
 
 // a function who turns adc samples to encoder pin signals
 uint8_t portDecode(void);
 // a function, returning a direction of encoder
 uint8_t encoderDecode(uint8_t port);
 
+const uint8_t encTable[4] = { (uint8_t)(((uint16_t)VOLT_TO_ADC_5V(33-VOLT_ERROR)) >> 2),
+                              (uint8_t)(((uint16_t)VOLT_TO_ADC_5V(25-VOLT_ERROR)) >> 2),
+                              (uint8_t)(((uint16_t)VOLT_TO_ADC_5V(20-VOLT_ERROR)) >> 2),
+                              (uint8_t)(((uint16_t)VOLT_TO_ADC_5V(10-VOLT_ERROR)) >> 2)};
+
 void encoderInit()
 {
     // adc config
-    ADMUX  = REFS0_VCC | MUX_ADC2;
+    ADMUX  = REFS0_VCC | ADLAR | MUX_ADC2;
     ADCSRA = ADEN | ADIE | ADPS_DIV128;
     // start conversion
     ADCSRA |= ADSC;
 }
 
-void portDecode()
+uint8_t portDecode()
 {
-    uint16_t adcValue = ((uint16_t)(ADCH << 8)) + ADCL;
+    uint8_t adcValue = ADCH;
     if( adcValue > encTable[ENC_NC] ) {
         return ENC_NC;
     } else if( adcValue > encTable[ENC_BOTH] ) {
@@ -67,12 +70,12 @@ uint8_t encoderDecode(uint8_t port)
         fixed = 0;
     }
     // fixing states of encoder
-    if( (stateCnt > stableCnt) && (fixed == 0) \
+    if( (stateCnt > STABLE_CNT) && (fixed == 0) \
      && (prevPort == ENC_A) && (port == ENC_BOTH) ) {
          fixed = 1;
          return ENC_CLOCKWISE;
     }
-    if( (stateCnt > stableCnt) && (fixed == 0) \
+    if( (stateCnt > STABLE_CNT) && (fixed == 0) \
      && (prevPort == ENC_BOTH) && (port == ENC_B) ) {
          fixed = 1;
          return ENC_ANTICLOCKWISE;
@@ -80,7 +83,7 @@ uint8_t encoderDecode(uint8_t port)
     return ENC_NOTHING;
 }
 
-INT(ADC_vect)
+ISR(ADC_vect)
 {
     uint8_t encoder = encoderDecode(portDecode());
     if(encoder == ENC_ANTICLOCKWISE) {

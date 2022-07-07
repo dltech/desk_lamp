@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <inttypes.h>
 
 // ports of colours
 #define PWM_PORT    PORTB
@@ -30,10 +31,11 @@ typedef struct {
     uint8_t green;
     uint8_t blue;
     uint8_t white;
-} colourTyp;
+} lampTyp;
 
 // pwm outputs init function
 void pwm_init(void);
+void setBrightness(uint8_t bright);
 // pwm outputs event loop
 void pwm_cycle(void);
 

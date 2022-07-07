@@ -23,6 +23,8 @@
 // Reference Selection Bit
 #define REFS0_VCC   0x00
 #define REFS0_REF   0x40
+// Reference Selection Bit
+#define ADLAR       0x20
 // Analog Channel Selection Bits
 #define MUX_ADC0    0x00
 #define MUX_ADC1    0x01
