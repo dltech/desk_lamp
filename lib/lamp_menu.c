@@ -15,27 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <avr/interrupt.h>
+#include "regs/timer_regs.h"
+#include "regs/wdt_regs.h"
 #include "pwm_lamp.h"
 #include "random127.h"
-#include "regs/timer_regs.h"
-#include <avr/interrupt.h>
 #include "lamp_menu.h"
 
 
 static uint8_t lampSetting;
 static uint8_t lampColour;
 static uint8_t brightness;
-extern volatile lampTyp lamp;
+extern lampTyp lamp;
 
-void colourSetup(uint8_t colour);
-void random(uint8_t seed);
-void acidEffect(void);
-void fireEffect(void);
+static void colourSetup(uint8_t colour);
+static void acidEffect(void);
+static void fireEffect(void);
+//callbacks for random modes
+static void rndCallback(void);
 
 void rndInit()
 {
-    TIMSK0 = TOIE0;
+    WDTCR = WDTIE | WDCE | WDP_1024K;
 }
 
 void longButtonCallback()
@@ -92,7 +93,7 @@ void anticlockwiseCallback()
     }
 }
 
-void colourSetup(uint8_t colour)
+static void colourSetup(uint8_t colour)
 {
     switch ( colour ) {
         case LAMP_RED:
@@ -158,7 +159,7 @@ void colourSetup(uint8_t colour)
     }
 }
 
-void acidEffect()
+static void acidEffect()
 {
     lamp.red = rand127();
     lamp.green = rand127();
@@ -170,7 +171,7 @@ void acidEffect()
     }
 }
 
-void fireEffect()
+static void fireEffect()
 {
     lamp.red = rand127();
     lamp.green = rand127();
@@ -181,7 +182,7 @@ void fireEffect()
     }
 }
 
-void rndCallback()
+static void rndCallback()
 {
     switch (lampSetting) {
         case LAMP_RND:
@@ -193,16 +194,7 @@ void rndCallback()
     }
 }
 
-ISR(TIM0_OVF_vect)
+ISR(WDT_vect)
 {
-    static uint8_t cnt;
-    static uint8_t cntt;
-    if(++cnt == 255) {
-        cnt = 0;
-        ++cntt;
-    }
-    if(cntt == 255) {
-        cntt = 0;
-        rndCallback();
-    }
+    rndCallback();
 }

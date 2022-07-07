@@ -17,11 +17,10 @@
  */
 
 #include <avr/io.h>
-#include <stdlib.h>
 #include "regs/timer_regs.h"
 #include "pwm_lamp.h"
 
-volatile lampTyp lamp;
+lampTyp lamp;
 
 void pwm_init()
 {

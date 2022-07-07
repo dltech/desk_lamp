@@ -51,7 +51,6 @@ void anticlockwiseCallback(void);
 void longButtonCallback(void);
 void buttonCallback(void);
 
-//callbacks for random modes
-void rndCallback(void);
+
 
 #endif

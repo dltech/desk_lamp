@@ -1,5 +1,5 @@
 /*
- * PWM driver for desk lamp. Fully 8-bits random implementation ANSI-C like.
+ * PWM driver for desk lamp. Delay functions for optimisation.
  *
  * Copyright 2022 Mikhail Belkin <dltech174@gmail.com>
  *
@@ -15,30 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "random127.h"
+#include <avr/io.h>
+#include "regs/timer_regs.h"
+#include "delay.h"
 
-static uint8_t next = 10;
-
-#define RAND_A  6
-#define RAND_M  127
-#define RAND_Q  RAND_M/RAND_A
-#define RAND_R  RAND_M%RAND_A
-
-uint8_t rand127(void)
+void delayMs(uint8_t ms)
 {
-    int8_t lo, hi, test;
-    hi = next / RAND_Q;
-    lo = next % RAND_Q;
-    test = RAND_A*lo - RAND_R*hi;
-    if(test > 0) {
-        next = test;
-    } else {
-        next = test + RAND_M;
-    }
-    return next;
-}
+    TIFR0 = 0;
+    uint8_t cnt = 38;
 
-void srand127(uint8_t seed)
-{
- 	next = seed;
+    do {
+        while((TIFR0 & TOV0) == 0);
+        if(--cnt == 0) {
+            cnt = 38;
+            --ms;
+        }
+        TIFR0 = 0;
+    } while(ms);
 }

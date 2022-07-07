@@ -21,6 +21,12 @@
 #include "regs/adc_regs.h"
 
 // voltages of resistor aray
+#define VOLT_ERROR  2
+#define ENC_NC_VOLT     (((uint16_t)VOLT_TO_ADC_5V(33-VOLT_ERROR)) >> 2)
+#define ENC_BOTH_VOLT   (((uint16_t)VOLT_TO_ADC_5V(25-VOLT_ERROR)) >> 2)
+#define ENC_A_VOLT      (((uint16_t)VOLT_TO_ADC_5V(20-VOLT_ERROR)) >> 2)
+#define ENC_B_VOLT      (((uint16_t)VOLT_TO_ADC_5V(10-VOLT_ERROR)) >> 2)
+
 enum{
     ENC_NC = 0,
     ENC_BOTH,
@@ -28,7 +34,6 @@ enum{
     ENC_B,
     ENC_BREAK
 } encoderStateMachine;
-#define VOLT_ERROR  2
 
 #define STABLE_CNT    50
 enum {

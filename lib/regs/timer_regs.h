@@ -61,7 +61,7 @@
 // Timer/Counter0 Overflow Interrupt Enable
 #define TOIE0   0x2
 
-/* Timer/Counter 0 Interrupt Flag Register */
+/* TIFR0 - Timer/Counter 0 Interrupt Flag Register */
 // Output Compare Flag 0 B
 #define OCF0B   0x8
 // Output Compare Flag 0 A

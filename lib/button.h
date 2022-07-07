@@ -19,8 +19,6 @@
  */
 #include <avr/io.h>
 
-#define F_CPU 9600000
-
 #define SW_PORT PORTB
 #define SW_PIN  PINB
 #define SW_GPIO 0x08

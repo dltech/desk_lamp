@@ -20,15 +20,8 @@
 #include "encoder_adc.h"
 #include "lamp_menu.h"
 
-// a function who turns adc samples to encoder pin signals
-uint8_t portDecode(void);
 // a function, returning a direction of encoder
-uint8_t encoderDecode(uint8_t port);
-
-const uint8_t encTable[4] = { (uint8_t)(((uint16_t)VOLT_TO_ADC_5V(33-VOLT_ERROR)) >> 2),
-                              (uint8_t)(((uint16_t)VOLT_TO_ADC_5V(25-VOLT_ERROR)) >> 2),
-                              (uint8_t)(((uint16_t)VOLT_TO_ADC_5V(20-VOLT_ERROR)) >> 2),
-                              (uint8_t)(((uint16_t)VOLT_TO_ADC_5V(10-VOLT_ERROR)) >> 2)};
+static uint8_t encoderDecode();
 
 void encoderInit()
 {
@@ -39,26 +32,24 @@ void encoderInit()
     ADCSRA |= ADSC;
 }
 
-uint8_t portDecode()
-{
-    uint8_t adcValue = ADCH;
-    if( adcValue > encTable[ENC_NC] ) {
-        return ENC_NC;
-    } else if( adcValue > encTable[ENC_BOTH] ) {
-        return ENC_BOTH;
-    } else if( adcValue > encTable[ENC_A] ) {
-        return ENC_A;
-    } else if( adcValue > encTable[ENC_B] ) {
-        return ENC_B;
-    }
-    return ENC_BREAK;
-}
-
-uint8_t encoderDecode(uint8_t port)
+static uint8_t encoderDecode()
 {
     static uint8_t prevPort = ENC_BREAK;
     static uint8_t stateCnt = 0;
     static uint8_t fixed = 1;
+    // decode port state
+    uint8_t adcValue = ADCH;
+    uint8_t port = ENC_BREAK;
+    if( adcValue > ENC_NC_VOLT ) {
+        port =  ENC_NC;
+    } else if( adcValue > ENC_BOTH_VOLT ) {
+        port = ENC_BOTH;
+    } else if( adcValue > ENC_A_VOLT ) {
+        port = ENC_A;
+    } else if( adcValue > ENC_B_VOLT ) {
+        port = ENC_B;
+    }
+    // decode encoder
     // a counter to fix a stable position of encoder
     if( (prevPort == port) && (stateCnt < 255) ) {
         ++stateCnt;
@@ -85,7 +76,7 @@ uint8_t encoderDecode(uint8_t port)
 
 ISR(ADC_vect)
 {
-    uint8_t encoder = encoderDecode(portDecode());
+    uint8_t encoder = encoderDecode();
     if(encoder == ENC_ANTICLOCKWISE) {
         anticlockwiseCallback();
     }

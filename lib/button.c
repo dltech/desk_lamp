@@ -15,11 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <avr/interrupt.h>
+#include <avr/io.h>
 #include "regs/interrupts_regs.h"
 #include "lamp_menu.h"
-#include "button.h"
+//#include "delay.h"
 #include "util/delay.h"
+#include "button.h"
 
 void buttonsInit()
 {
