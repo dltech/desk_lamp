@@ -32,14 +32,16 @@ enum{
     ENC_BOTH,
     ENC_A,
     ENC_B,
-    ENC_BREAK
+    ENC_BUTTON
 } encoderStateMachine;
 
 #define STABLE_CNT    50
 enum {
     ENC_NOTHING = 0,
     ENC_CLOCKWISE,
-    ENC_ANTICLOCKWISE
+    ENC_ANTICLOCKWISE,
+    ENC_BUTTON_SHORT,
+    ENC_BUTTON_LONG
 };
 
 // encoder init

@@ -34,12 +34,12 @@ void encoderInit()
 
 static uint8_t encoderDecode()
 {
-    static uint8_t prevPort = ENC_BREAK;
+    static uint8_t prevPort = ENC_BUTTON;
     static uint8_t stateCnt = 0;
     static uint8_t fixed = 1;
     // decode port state
     uint8_t adcValue = ADCH;
-    uint8_t port = ENC_BREAK;
+    uint8_t port = ENC_BUTTON;
     if( adcValue > ENC_NC_VOLT ) {
         port =  ENC_NC;
     } else if( adcValue > ENC_BOTH_VOLT ) {
@@ -71,6 +71,13 @@ static uint8_t encoderDecode()
          fixed = 1;
          return ENC_ANTICLOCKWISE;
     }
+    // fixing button push
+    if( (stateCnt > 10) && (port == ENC_BUTTON) ) {
+        return ENC_BUTTON_SHORT;
+    }
+    if( (stateCnt > 50) && (port == ENC_BUTTON) ) {
+        return ENC_BUTTON_LONG;
+    }
     return ENC_NOTHING;
 }
 
@@ -82,6 +89,12 @@ ISR(ADC_vect)
     }
     if(encoder == ENC_CLOCKWISE) {
         clockwiseCallback();
+    }
+    if(encoder == ENC_BUTTON_SHORT) {
+        buttonCallback();
+    }
+    if(encoder == ENC_BUTTON_LONG) {
+        longButtonCallback();
     }
     ADCSRA &= ~ADIF;
     ADCSRA |= ADSC;

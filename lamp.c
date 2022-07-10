@@ -25,7 +25,6 @@ int main(void)
 {
     pwm_init();
     encoderInit();
-    buttonsInit();
     rndInit();
 
     while(1) {

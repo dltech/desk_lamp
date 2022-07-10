@@ -1,5 +1,5 @@
 PRG            = lamp
-OBJ            = lamp.o lib/button.o lib/encoder_adc.o lib/lamp_menu.o lib/pwm_lamp.o lib/random127.o 
+OBJ            = lamp.o lib/encoder_adc.o lib/lamp_menu.o lib/pwm_lamp.o lib/random127.o 
 MCU_TARGET     = attiny13
 OPTIMIZE       = -Os
 

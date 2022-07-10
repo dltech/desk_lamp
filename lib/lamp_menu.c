@@ -31,17 +31,19 @@ extern lampTyp lamp;
 static void colourSetup(uint8_t colour);
 static void acidEffect(void);
 static void fireEffect(void);
+static void nightMode(void);
 //callbacks for random modes
 static void rndCallback(void);
 
 void rndInit()
 {
+    PH_PORT |= PH_GPIO;
     WDTCR = WDTIE | WDCE | WDP_1024K;
 }
 
 void longButtonCallback()
 {
-    lampSetting = LAMP_WHITE;
+    lampSetting = LAMP_OFF;
     brightness = 0;
     setBrightness(0);
 }
@@ -49,6 +51,7 @@ void longButtonCallback()
 void buttonCallback()
 {
     switch ( lampSetting ) {
+        case LAMP_OFF:
         case LAMP_WHITE:
             lampSetting = LAMP_COLOUR;
             lamp.white = 0x00;
@@ -182,6 +185,14 @@ static void fireEffect()
     }
 }
 
+static void nightMode()
+{
+    if( (PH_PIN & PH_PORT) != 0) {
+        lamp.blue = 0x07;
+        lamp.white = 0x07;
+    }
+}
+
 static void rndCallback()
 {
     switch (lampSetting) {
@@ -190,6 +201,9 @@ static void rndCallback()
             break;
         case LAMP_FIRE:
             fireEffect();
+            break;
+        case LAMP_OFF:
+            nightMode();
             break;
     }
 }

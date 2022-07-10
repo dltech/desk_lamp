@@ -19,7 +19,12 @@
  */
 #include <inttypes.h>
 
+#define PH_PORT PORTB
+#define PH_PIN  PINB
+#define PH_GPIO 0x08
+
 enum{
+    LAMP_OFF,
     LAMP_WHITE,
     LAMP_COLOUR,
     LAMP_RND,
