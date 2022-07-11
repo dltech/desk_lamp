@@ -1,4 +1,4 @@
-20251330369919285
+20252988169845977
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -85784,6 +85784,13 @@ varistor SIOV
 0
 2
 2
+local
+Input_coil
+
+
+0
+4
+4
 local
 SW_PUSH_6mm_2cont
 https://www.omron.com/ecb/products/pdf/en-b3f.pdf
